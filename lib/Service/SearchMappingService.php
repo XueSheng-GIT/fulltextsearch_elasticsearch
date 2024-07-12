@@ -274,8 +274,13 @@ class SearchMappingService {
 		}
 
 		foreach ($request->getWildcardFields() as $field) {
+			$word = $content->getWord();
 			if (!$this->fieldIsOutLimit($request, $field)) {
-				$queryFields[] = ['wildcard' => [$field => '*' . $content->getWord() . '*']];
+				if (strpos($word, '*') !== false || strpos($word, '?') !== false) {
+					$queryFields[] = ['wildcard' => [$field => $word]];
+				} else {
+					$queryFields[] = ['wildcard' => [$field => '*' . $word . '*']];
+				}
 			}
 		}
 
